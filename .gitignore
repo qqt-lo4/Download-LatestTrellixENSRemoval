@@ -1,2 +1,0 @@
-# Ignore .git directories from UDF submodules
-UDF/**/.git
