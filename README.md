@@ -1,6 +1,15 @@
 # Download-LatestTrellixENSRemoval
 
-Automated PowerShell solution that downloads the latest Trellix EPR (Endpoint Product Removal) tool from a Trellix ePO server and registers the download as a daily Windows scheduled task.
+<div>
+  <img src="icon.png" alt="icon" width="128" align="left" style="margin-right: 16px;" />
+
+  Automated PowerShell solution that downloads the latest Trellix EPR (Endpoint Product Removal) tool from a Trellix ePO server and registers the download as a daily Windows scheduled task.
+
+  ![PowerShell](https://img.shields.io/badge/PowerShell-5.1%2B-blue)
+  ![Windows](https://img.shields.io/badge/Windows-10%2F11-0078D6)
+  ![License](https://img.shields.io/badge/License-PolyForm%20Noncommercial-lightgrey)
+</div>
+<br clear="left" />
 
 ## Features
 
@@ -125,6 +134,10 @@ $cred = Get-Credential
 | `InstallCred` | No | Credential for the scheduled task account |
 | `TaskName` | No | Scheduled task name (default: `Trellix EPR Daily Download`) |
 | `TaskDescription` | No | Scheduled task description |
+
+## Disclaimer
+
+This project is not affiliated with, endorsed by, or associated with Trellix or any of its subsidiaries. Trellix is a registered trademark of Musarubra US LLC. This tool is an independent project developed to automate the download of Trellix EPR tools from an existing ePO infrastructure.
 
 ## Author
 
