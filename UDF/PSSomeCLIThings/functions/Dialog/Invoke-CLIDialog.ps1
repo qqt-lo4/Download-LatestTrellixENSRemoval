@@ -138,7 +138,7 @@ function Invoke-CLIDialog {
         Module: CLIDialog
         Author: Loïc Ade
         Created: 2025-10-20
-        Version: 1.0.0
+        Version: 1.1.0
         Dependencies: New-CLIDialog, New-DialogResultAction, New-DialogResultScriptblock, New-DialogResultValue, Invoke-Pause
 
         This function is a high-level wrapper that simplifies dialog invocation and handles common
@@ -185,6 +185,10 @@ function Invoke-CLIDialog {
         - Useful for "edit and retry" scenarios
 
         CHANGELOG:
+
+        Version 1.1.0 - 2026-03-20 - Loïc Ade
+            - Corrected : Object result value property returns now selected
+               items when checkboxes were used, or form result if form is valid
 
         Version 1.0.0 - 2025-10-20 - Loïc Ade
             - Initial release
@@ -256,7 +260,15 @@ function Invoke-CLIDialog {
                 }
                 switch ($hResult.Type) {
                     { $_ -in @("Action", "Action_Scriptblock") } {
-                        return New-DialogResultAction -Action $oResult.Action -DialogResult $hResult -Value $oResult.Object 
+                        if ($hResult.Form.SelectedObjectsArray) {
+                            return New-DialogResultAction -Action $oResult.Action -DialogResult $hResult -Value $hResult.Form.SelectedObjectsArray
+                        } elseif ($oResult.Object) {
+                            return New-DialogResultAction -Action $oResult.Action -DialogResult $hResult -Value $oResult.Object
+                        } elseif ($Dialog.IsValidForm()) {
+                            return New-DialogResultAction -Action $oResult.Action -DialogResult $hResult -Value $hResult.Form.GetValue()
+                        } else {
+                            return New-DialogResultAction -Action $oResult.Action -DialogResult $hResult -Value $oResult.Object
+                        }
                     }
                     "Scriptblock" {
                         return New-DialogResultScriptblock -DialogResult $hResult -Value $oResult.Object
@@ -332,7 +344,7 @@ function Invoke-CLIDialog {
             )
             if ($Validate) {
                 $oResult = Show -Dialog $Dialog -DontSpaceAfterDialog:$DontSpaceAfterDialog
-                while ((-not $Dialog.IsValidForm()) -and ($oResult.Action -ne "Cancel") -and ($oResult.Action -ne "Exit")) {
+                while ((-not $Dialog.IsValidForm()) -and ($oResult.Action -ne "Cancel") -and ($oResult.Action -ne "Exit") -and ($oResult.Action -ne "Back")) {
                     Write-ErrorMessage -Dialog $Dialog -Details:$ErrorDetails -CustomErrorMessage $CustomErrorMessage
                     if ($PauseAfterErrorMessage) {
                         Invoke-Pause -ReplaceByLine -LineColor Red -MessageColor White
